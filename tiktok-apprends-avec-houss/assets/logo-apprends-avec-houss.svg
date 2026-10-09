@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#2E1065"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <!-- bonnet de diplômé -->
+  <path d="M370 395 V470 Q500 535 630 470 V395 L500 450 Z" fill="#6D4AE8"/>
+  <polygon points="500,245 735,340 500,435 265,340" fill="url(#cap)"/>
+  <line x1="735" y1="340" x2="735" y2="450" stroke="#FACC15" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="735" cy="470" r="22" fill="#FACC15"/>
+  <!-- H -->
+  <rect x="335" y="560" width="92" height="270" rx="26" fill="#FFFFFF"/>
+  <rect x="573" y="560" width="92" height="270" rx="26" fill="#FFFFFF"/>
+  <rect x="335" y="662" width="330" height="76" rx="22" fill="#FFFFFF"/>
+</svg>

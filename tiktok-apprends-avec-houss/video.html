@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Apprends avec Houss · TikTok v1</title>
+<style>
+  /* Police unique : Alexandria (variable 100–900), chargée en local.
+     HoussEmoji = sous-ensemble de Noto Color Emoji limité aux 3 points de code
+     des emojis du script (🇹🇳 et 🤫) ; il ne s'applique à aucune lettre. */
+  @font-face {
+    font-family: "Alexandria";
+    src: url("assets/Alexandria%5Bwght%5D.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "HoussEmoji";
+    src: url("assets/emoji-tn-shush.ttf") format("truetype");
+    unicode-range: U+1F1F3, U+1F1F9, U+1F92B;
+    font-display: block;
+  }
+
+  :root {
+    --navy: #0F172A;
+    --yellow: #FACC15;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body {
+    font-family: "Alexandria", "HoussEmoji";
+    font-synthesis: none;
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+  ul { list-style: none; }
+
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+  .scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; visibility: hidden; }
+  .scene.bg-yellow { background: var(--yellow); color: var(--navy); }
+  .scene.bg-navy { background: var(--navy); color: var(--white); }
+
+  /* En-tête : logo rond + nom du compte */
+  .header {
+    position: absolute; top: 206px; left: 110px; width: 860px; height: 88px;
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+  }
+  .logo { width: 88px; height: 88px; border-radius: 50%; display: block; }
+  .bg-navy .logo { box-shadow: 0 0 0 4px var(--yellow); }
+  .brand { font-size: 36px; font-weight: 800; line-height: 1; white-space: nowrap; letter-spacing: -0.01em; }
+
+  /* Zone de contenu = zone sûre TikTok (x 110–970, y 330–1500 sous l'en-tête) */
+  .content {
+    position: absolute; top: 330px; left: 110px; width: 860px; height: 1170px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+
+  .w { display: inline-block; }
+  .nw { white-space: nowrap; }
+  .y { color: var(--yellow); }
+
+  .sticker {
+    display: inline-block; transform: rotate(-3deg); border-radius: 26px;
+    font-weight: 800; white-space: nowrap; line-height: 1.3;
+  }
+  .st-navy { background: var(--navy); color: var(--white); }
+  .st-yellow { background: var(--yellow); color: var(--navy); }
+
+  /* Scène 1 */
+  #s1 .sticker { font-size: 48px; padding: 14px 36px 18px; margin-bottom: 64px; }
+  #s1 .t1 { font-size: 88px; font-weight: 900; line-height: 1.3; white-space: nowrap; }
+  #s1 .hl-wrap { position: relative; display: inline-block; transform: rotate(-3deg); margin: 34px 0 26px; }
+  #s1 .hl-bg { position: absolute; inset: 0; background: var(--navy); border-radius: 28px; transform-origin: right center; }
+  #s1 .hl-text { position: relative; display: block; color: var(--yellow); font-size: 88px; font-weight: 900; line-height: 1.3; padding: 2px 32px 18px; white-space: nowrap; }
+
+  /* Scène 2 */
+  #s2 .lead { font-size: 64px; font-weight: 800; line-height: 1.3; }
+  #s2 .big { font-size: 280px; font-weight: 900; line-height: 1.05; color: var(--yellow); font-feature-settings: "tnum" 1; letter-spacing: -0.03em; margin: 6px 0 20px; }
+  #s2 .big .count { display: inline-block; text-align: center; }
+  #s2 .body { font-size: 44px; font-weight: 600; line-height: 1.6; }
+  #s2 .body .y { font-weight: 800; }
+  #s2 .src { font-size: 28px; font-weight: 400; line-height: 1.55; margin-top: 64px; }
+
+  /* Scène 3 */
+  #s3 .pp { font-size: 100px; font-weight: 900; line-height: 1.15; white-space: nowrap; letter-spacing: -0.02em; }
+  #s3 .dyn { font-size: 84px; font-weight: 900; line-height: 1.2; white-space: nowrap; color: var(--yellow); letter-spacing: -0.02em; margin-bottom: 56px; }
+  #s3 .cards { display: flex; flex-direction: column; gap: 28px; width: 860px; }
+  #s3 .card {
+    display: flex; align-items: center; gap: 30px; width: 860px; min-height: 200px;
+    border: 4px solid var(--white); border-radius: 36px; padding: 26px 40px;
+  }
+  #s3 .num { flex: none; font-size: 112px; font-weight: 900; line-height: 1.1; color: var(--yellow); font-feature-settings: "tnum" 1; letter-spacing: -0.02em; }
+  #s3 .num .count { display: inline-block; text-align: center; }
+  #s3 .lbl { flex: 1; font-size: 40px; font-weight: 700; line-height: 1.45; text-align: right; }
+  #s3 .src { font-size: 26px; font-weight: 400; line-height: 1.6; margin-top: 48px; }
+
+  /* Scène 4 */
+  #s4 .name { font-size: 190px; font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
+  #s4 .sticker { font-size: 52px; padding: 10px 40px 14px; margin-top: 4px; }
+  #s4 .role { font-size: 44px; font-weight: 700; line-height: 1.4; margin-top: 36px; white-space: nowrap; }
+  #s4 .bullets { margin-top: 70px; display: flex; flex-direction: column; gap: 30px; align-items: stretch; }
+  #s4 .bullets li { display: flex; align-items: center; gap: 26px; }
+  #s4 .chk { flex: none; width: 64px; height: 64px; display: block; }
+  #s4 .bt { font-size: 42px; font-weight: 700; line-height: 1.4; text-align: right; white-space: nowrap; }
+
+  /* Scène 5 */
+  #s5 .ask { font-size: 150px; font-weight: 900; line-height: 1.3; margin-bottom: 56px; }
+  #s5 .cta { width: 860px; background: var(--navy); border-radius: 44px; padding: 56px 48px 60px; color: var(--white); }
+  #s5 .c1 { font-size: 44px; font-weight: 700; line-height: 1.5; }
+  #s5 .c2 { font-size: 96px; font-weight: 900; line-height: 1.35; color: var(--yellow); margin: 16px 0 44px; white-space: nowrap; }
+  #s5 .c3 { font-size: 40px; font-weight: 500; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Accroche (0–3,5 s) -->
+  <section class="scene bg-yellow" id="s1" data-start="0" data-end="3.5">
+    <div class="header" dir="ltr"><img class="logo" src="assets/logo-apprends-avec-houss-charte.svg" alt=""><span class="brand">Apprends avec Houss</span></div>
+    <div class="content">
+      <div class="a" data-d="0.10"><div class="sticker st-navy" dir="rtl">للطلبة في تونس 🇹🇳</div></div>
+      <h1 class="t1" dir="rtl"><span class="a w" data-d="0.20">فما</span> <span class="a w" data-d="0.30">skill</span> <span class="a w" data-d="0.40">في</span> <span class="a w" data-d="0.50">الـ</span> <span class="a w" data-d="0.60">IT</span></h1>
+      <div class="hl-wrap" dir="rtl">
+        <span class="a hl-bg" data-d="0.70" data-anim="wipe"></span>
+        <span class="hl-text"><span class="a w" data-d="0.80">ما</span> <span class="a w" data-d="0.90">يحكيوش</span> <span class="a w" data-d="1.00">عليه</span></span>
+      </div>
+      <h1 class="t1" dir="rtl"><span class="a w" data-d="1.10">في</span> <span class="a w" data-d="1.20">الفاك</span> <span class="a w" data-d="1.30">🤫</span></h1>
+    </div>
+  </section>
+
+  <!-- 2. Le constat (3,5–7,5 s) -->
+  <section class="scene bg-navy" id="s2" data-start="3.5" data-end="7.5">
+    <div class="header" dir="ltr"><img class="logo" src="assets/logo-apprends-avec-houss-charte.svg" alt=""><span class="brand">Apprends avec Houss</span></div>
+    <div class="content">
+      <p class="a lead" data-d="0.12" dir="rtl">حتى في أمريكا…</p>
+      <div class="a big" data-d="0.22" dir="ltr"><span class="count" data-d="0.22" data-dur="0.9" data-to="-20" data-fmt="pct">−20%</span></div>
+      <p class="a body" data-d="0.32" dir="rtl">عدد المطوّرين اللي عمرهم بين 22 و25 سنة واللي خدّامين <span class="y">نقص قريب <span dir="ltr">20%</span></span> من آخر 2022 لسبتمبر 2025.</p>
+      <p class="a src" data-d="0.42" dir="rtl">المصدر: دراسة <span class="nw" dir="ltr">Canaries in the Coal Mine</span> متاع <span class="nw" dir="ltr">Stanford Digital Economy Lab</span>، 2025</p>
+    </div>
+  </section>
+
+  <!-- 3. L'opportunité (7,5–11,5 s) -->
+  <section class="scene bg-navy" id="s3" data-start="7.5" data-end="11.5">
+    <div class="header" dir="ltr"><img class="logo" src="assets/logo-apprends-avec-houss-charte.svg" alt=""><span class="brand">Apprends avec Houss</span></div>
+    <div class="content">
+      <h1 class="a pp" data-d="0.12" dir="ltr">Power&nbsp;Platform</h1>
+      <h2 class="a dyn" data-d="0.22" dir="ltr">&amp; Dynamics&nbsp;365</h2>
+      <div class="cards">
+        <div class="a card" data-d="0.34" dir="rtl">
+          <div class="a num" data-d="0.44" dir="ltr"><span class="count" data-d="0.44" data-dur="0.8" data-to="48" data-fmt="M0">48M</span></div>
+          <div class="a lbl" data-d="0.54">مستعمل نشيط كل شهر (2024)</div>
+        </div>
+        <div class="a card" data-d="0.64" dir="rtl">
+          <div class="a num" data-d="0.74" dir="ltr"><span class="count" data-d="0.74" data-dur="0.8" data-to="3" data-fmt="M1">3M</span></div>
+          <div class="a lbl" data-d="0.84"><span dir="ltr">agent IA</span> تعملو في عام واحد (2025)</div>
+        </div>
+      </div>
+      <div class="a src" data-d="0.94" dir="rtl">
+        <p><span dir="ltr">Microsoft</span>، <span class="nw" dir="ltr">Power&nbsp;Platform Community Conference 2024</span></p>
+        <p><span class="nw" dir="ltr">Satya Nadella</span>، نتائج Microsoft جويلية 2025</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Qui je suis (11,5–15 s) -->
+  <section class="scene bg-navy" id="s4" data-start="11.5" data-end="15">
+    <div class="header" dir="ltr"><img class="logo" src="assets/logo-apprends-avec-houss-charte.svg" alt=""><span class="brand">Apprends avec Houss</span></div>
+    <div class="content">
+      <h1 class="a name" data-d="0.12" dir="ltr">Houss</h1>
+      <div class="a" data-d="0.22"><div class="sticker st-yellow" dir="ltr">Tech Lead</div></div>
+      <p class="a role" data-d="0.32" dir="ltr">Power&nbsp;Platform &amp; Dynamics&nbsp;365</p>
+      <ul class="bullets" dir="rtl">
+        <li>
+          <svg class="a chk" data-d="0.44" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#FACC15"/><path class="tick" data-d="0.52" d="M18 33 L28 43 L46 23" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="a bt" data-d="0.54"><span class="y">5 سنين</span> خبرة في المجال</span>
+        </li>
+        <li>
+          <svg class="a chk" data-d="0.64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#FACC15"/><path class="tick" data-d="0.72" d="M18 33 L28 43 L46 23" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="a bt" data-d="0.74">نخدم مع شركات فرنسية من تونس</span>
+        </li>
+        <li>
+          <svg class="a chk" data-d="0.84" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#FACC15"/><path class="tick" data-d="0.92" d="M18 33 L28 43 L46 23" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="a bt" data-d="0.94">شهايد Microsoft: <span class="nw y">PL-400</span> و <span class="nw y">PL-200</span></span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Appel à l'action (15–18,5 s) -->
+  <section class="scene bg-yellow" id="s5" data-start="15" data-end="18.5">
+    <div class="header" dir="ltr"><img class="logo" src="assets/logo-apprends-avec-houss-charte.svg" alt=""><span class="brand">Apprends avec Houss</span></div>
+    <div class="content">
+      <h1 class="a ask" data-d="0.12" dir="rtl">تحب تبدا؟</h1>
+      <div class="a cta" data-d="0.22" dir="rtl">
+        <p class="a c1" data-d="0.32">الرابط باش تسجّل وتاخو الـ guide</p>
+        <p class="a c2" data-d="0.42">في أوّل كومنتار</p>
+        <p class="a c3" data-d="0.52">انسخو وحلّو في الـ navigateur</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script>
+  // Timeline pilotée par t (secondes). Aucune animation en temps réel :
+  // le moteur de rendu appelle renderAt(frame / FPS) avant chaque capture.
+  const FPS = 30;
+  const DURATION = 18.5;
+  const W = 1080;
+  const TRANSITION = 0.28;   // glissement entre scènes (≤ 300 ms)
+  const IN_DUR = 0.40;       // entrée d'un élément : glissement + fondu
+  const RISE = 34;           // amplitude du glissement (px)
+  const TICK_DUR = 0.26;
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const outCubic = x => 1 - Math.pow(1 - x, 3);
+  const inOutCubic = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+  const scenes = [...document.querySelectorAll('.scene')].map(el => ({
+    el, start: parseFloat(el.dataset.start), end: parseFloat(el.dataset.end),
+  }));
+  const items = [], counters = [], ticks = [];
+  for (const s of scenes) {
+    for (const el of s.el.querySelectorAll('.a')) {
+      items.push({ el, t0: s.start + parseFloat(el.dataset.d), anim: el.dataset.anim || 'up' });
+    }
+    for (const el of s.el.querySelectorAll('.count')) {
+      counters.push({
+        el, t0: s.start + parseFloat(el.dataset.d), dur: parseFloat(el.dataset.dur),
+        to: parseFloat(el.dataset.to), fmt: el.dataset.fmt, final: el.textContent,
+      });
+    }
+    for (const el of s.el.querySelectorAll('.tick')) {
+      const len = el.getTotalLength();
+      el.style.strokeDasharray = len;
+      ticks.push({ el, t0: s.start + parseFloat(el.dataset.d), len });
+    }
+  }
+
+  function formatCount(c, v) {
+    if (c.fmt === 'pct') { const n = Math.round(v); return n < 0 ? '−' + (-n) + '%' : n + '%'; }
+    if (c.fmt === 'M0') return Math.round(v) + 'M';
+    if (c.fmt === 'M1') return v.toFixed(1) + 'M';
+    return String(v);
+  }
+
+  function renderAt(t) {
+    scenes.forEach((s, i) => {
+      const first = i === 0, last = i === scenes.length - 1;
+      const visible = (first || t >= s.start - TRANSITION / 2) && (last || t < s.end + TRANSITION / 2);
+      let x = 0;
+      if (!first && t < s.start + TRANSITION / 2) {
+        // la nouvelle scène arrive par la gauche (sens de lecture arabe)
+        x = -(1 - inOutCubic(clamp((t - (s.start - TRANSITION / 2)) / TRANSITION))) * W;
+      } else if (!last && t > s.end - TRANSITION / 2) {
+        x = inOutCubic(clamp((t - (s.end - TRANSITION / 2)) / TRANSITION)) * W;
+      }
+      s.el.style.visibility = visible ? 'visible' : 'hidden';
+      s.el.style.transform = x ? `translateX(${x.toFixed(2)}px)` : 'none';
+    });
+
+    for (const it of items) {
+      const p = clamp((t - it.t0) / IN_DUR), e = outCubic(p);
+      if (it.anim === 'wipe') {
+        it.el.style.opacity = p > 0 ? 1 : 0;
+        it.el.style.transform = p >= 1 ? 'none' : `scaleX(${e.toFixed(4)})`;
+      } else {
+        it.el.style.opacity = p >= 1 ? '' : e.toFixed(4);
+        it.el.style.transform = p >= 1 ? '' : `translateY(${((1 - e) * RISE).toFixed(2)}px)`;
+      }
+    }
+
+    for (const c of counters) {
+      const p = clamp((t - c.t0) / c.dur);
+      c.el.textContent = p >= 1 ? c.final : formatCount(c, c.to * outCubic(p));
+    }
+
+    for (const k of ticks) {
+      const p = outCubic(clamp((t - k.t0) / TICK_DUR));
+      k.el.style.strokeDashoffset = (k.len * (1 - p)).toFixed(2);
+    }
+  }
+
+  window.VIDEO = { FPS, DURATION, scenes: scenes.map(s => ({ id: s.el.id, start: s.start, end: s.end })) };
+  window.renderAt = renderAt;
+
+  window.ready = (async () => {
+    await Promise.all([
+      document.fonts.load('900 100px "Alexandria"', 'فما skill في الـ IT'),
+      document.fonts.load('400 40px "Alexandria"', 'المصدر Microsoft'),
+      document.fonts.load('100px "HoussEmoji"', '🇹🇳🤫'),
+    ]);
+    await document.fonts.ready;
+    await Promise.all([...document.images].map(img => img.decode()));
+    const face = [...document.fonts].find(f => f.family.replace(/"/g, '') === 'Alexandria');
+    const emoji = [...document.fonts].find(f => f.family.replace(/"/g, '') === 'HoussEmoji');
+    const fonts = {
+      alexandriaStatus: face ? face.status : 'absent',
+      alexandriaCheck: document.fonts.check('900 100px "Alexandria"', 'فما skill') &&
+                       document.fonts.check('400 40px "Alexandria"', 'المصدر'),
+      emojiStatus: emoji ? emoji.status : 'absent',
+    };
+    fonts.ok = fonts.alexandriaStatus === 'loaded' && fonts.alexandriaCheck && fonts.emojiStatus === 'loaded';
+
+    // Les compteurs gardent la largeur de leur valeur finale : rien ne bouge autour pendant le comptage.
+    for (const c of counters) c.el.style.width = c.el.getBoundingClientRect().width + 'px';
+
+    renderAt(0);
+    return fonts;
+  })();
+</script>
+</body>
+</html>
